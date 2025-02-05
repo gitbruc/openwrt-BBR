@@ -1,0 +1,47 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2023 沉默の金 <cmzj11@gmail.com>
+# Copyright (C) 2022 Lean <coolsnowwolf@gmail.com>
+# Copyright (C) 2019-2021 Tianling Shen <cnsztl@immortalwrt.org>
+
+START=90
+STOP=10
+
+EXTRA_COMMANDS="check_status"
+EXTRA_HELP="	check_status Check running status of BBR"
+
+inital_conf(){
+	config_load "bbrswitch"
+	config_get "bbr_cca" "config" "bbr_cca" "0"
+	[ ! -e "/lib/modules/$(uname -r)/tcp_bbr.ko" ] && bbr_cca="0"
+}
+
+start(){
+	inital_conf
+
+	if [ "${bbr_cca}" -eq "1" ];  then
+		sysctl -w net.ipv4.tcp_congestion_control="bbr"
+		sysctl -w net.core.default_qdisc=fq_codel
+	else
+		sysctl -w net.ipv4.tcp_congestion_control="cubic"
+		sysctl -w net.core.default_qdisc=fq_codel
+	fi
+}
+
+stop(){
+	inital_conf
+
+	if [ "${bbr_cca}" -eq "1" ];  then
+		sysctl -w net.ipv4.tcp_congestion_control="cubic"
+		sysctl -w net.core.default_qdisc=fq_codel
+	fi
+}
+
+restart(){
+	stop
+	start
+}
+
+check_status(){
+	bbr_state=$(config_get bbr_cca)
+	[ "$bbr_state" = "1" ] && echo "BBR is running" || echo "BBR is not running"
+}
