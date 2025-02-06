@@ -11,7 +11,7 @@ EXTRA_HELP="	check_status Check running status of BBR"
 
 inital_conf(){
 	config_load "bbrswitch"
-	config_get "bbr_cca" "config" "bbr_cca" "0"
+    config_get bbr_cca "config" "bbr_cca" "0"
 	[ ! -e "/lib/modules/$(uname -r)/tcp_bbr.ko" ] && bbr_cca="0"
 }
 
@@ -23,7 +23,7 @@ start(){
 		sysctl -w net.core.default_qdisc=fq_codel
 	else
 		sysctl -w net.ipv4.tcp_congestion_control="cubic"
-		sysctl -w net.core.default_qdisc=fq_codel
+		sysctl -w net.core.default_qdisc=pfifo_fast
 	fi
 }
 
@@ -31,8 +31,8 @@ stop(){
 	inital_conf
 
 	if [ "${bbr_cca}" -eq "1" ];  then
-		sysctl -w net.ipv4.tcp_congestion_control="cubic"
-		sysctl -w net.core.default_qdisc=fq_codel
+	sysctl -w net.ipv4.tcp_congestion_control="cubic"
+    sysctl -w net.core.default_qdisc=pfifo_fast
 	fi
 }
 
@@ -42,6 +42,17 @@ restart(){
 }
 
 check_status(){
-	bbr_state=$(config_get bbr_cca)
-	[ "$bbr_state" = "1" ] && echo "BBR is running" || echo "BBR is not running"
+	case "$1" in
+	"bbr")
+		[ "x$(cat "/proc/sys/net/ipv4/tcp_congestion_control" 2>"/dev/null")" = "xbbr" ] && \
+			exit 0 || exit 1
+		;;
+	*)
+		exit 2
+		;;
+	esac
+	if [ "$msg" != "" ] && { [ $# = 1 ] || { [ $# = 2 ] && [ "$2" = 1 ]; }; }; then
+    	echo -n "$msg"
+	fi
+	exit "$exit_code"
 }

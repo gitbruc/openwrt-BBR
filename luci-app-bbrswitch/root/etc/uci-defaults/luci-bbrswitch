@@ -1,0 +1,12 @@
+#!/bin/sh
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@bbrswitch[-1]
+	add ucitrack bbrswitch
+	set ucitrack.@bbrswitch[-1].init=bbrswitch
+	commit ucitrack
+EOF
+
+uci commit bbrswitch
+
+exit 0

@@ -1,6 +1,6 @@
 local kernel_version = luci.sys.exec("echo -n $(uname -r)")
 
-m = Map("BBRswitch")
+m = Map("bbrswitch")
 m.title	= translate("BBRswitch Settings")
 m.description = translate("BBR Congestion Control Algorithm Switch")
 

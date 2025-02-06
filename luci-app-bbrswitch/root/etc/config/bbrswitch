@@ -1,2 +1,3 @@
-config turboacc 'config'
+
+config bbrswitch 'config'
 	option bbr_cca '1'
