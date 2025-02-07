@@ -18,17 +18,20 @@ if nixio.fs.access("/lib/modules/" .. kernel_version .. "/tcp_bbr.ko") then
     function bbr_cca.write(self, section, value)
         -- 调用父类的 write 方法保存配置
         Flag.write(self, section, value)
-        
-        -- 判断开启或关闭 BBR
+
+        -- 根据值启动或停止 BBR
         if value == "1" then
-            -- 开启 BBR
+            -- 启动 BBR
             luci.sys.call("/etc/init.d/bbrswitch start >/dev/null 2>&1 &")
         else
-            -- 关闭 BBR
+            -- 停止 BBR
             luci.sys.call("/etc/init.d/bbrswitch stop >/dev/null 2>&1 &")
         end
+
+        -- 刷新页面或返回当前页面
+        luci.sys.call("uci commit bbr")
+        luci.http.redirect(luci.dispatcher.build_url(luci.dispatcher.context.requestpath))  -- 刷新当前页面
     end
 end
 
 return m
-
