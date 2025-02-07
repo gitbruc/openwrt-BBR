@@ -29,8 +29,8 @@ if nixio.fs.access("/lib/modules/" .. kernel_version .. "/tcp_bbr.ko") then
         end
 
         -- 刷新页面或返回当前页面
-        luci.sys.call("uci commit bbr")
-        luci.http.redirect(luci.dispatcher.build_url(luci.dispatcher.context.requestpath))  -- 刷新当前页面
+        --luci.sys.call("uci commit bbr")
+        --luci.http.redirect(luci.dispatcher.build_url(luci.dispatcher.context.requestpath))  -- 刷新当前页面
     end
 end
 
