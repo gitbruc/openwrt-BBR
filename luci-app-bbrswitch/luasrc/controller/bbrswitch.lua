@@ -20,5 +20,5 @@ function action_status()
 	luci.http.prepare_content("application/json")
 	luci.http.write_json({
 		bbr_state = bbr_status()
-    })
+})
 end

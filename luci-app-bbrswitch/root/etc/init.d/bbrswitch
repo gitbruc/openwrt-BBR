@@ -29,11 +29,8 @@ start(){
 
 stop(){
 	inital_conf
-
-	if [ "${bbr_cca}" -eq "1" ];  then
 	sysctl -w net.ipv4.tcp_congestion_control="cubic"
     sysctl -w net.core.default_qdisc=pfifo_fast
-	fi
 }
 
 restart(){
@@ -41,18 +38,17 @@ restart(){
 	start
 }
 
-check_status(){
-	case "$1" in
-	"bbr")
-		[ "x$(cat "/proc/sys/net/ipv4/tcp_congestion_control" 2>"/dev/null")" = "xbbr" ] && \
-			exit 0 || exit 1
-		;;
-	*)
-		exit 2
-		;;
-	esac
-	if [ "$msg" != "" ] && { [ $# = 1 ] || { [ $# = 2 ] && [ "$2" = 1 ]; }; }; then
-    	echo -n "$msg"
-	fi
-	exit "$exit_code"
+check_status() {
+    case "$1" in
+    "bbr")
+        if [ "$(cat /proc/sys/net/ipv4/tcp_congestion_control)" = "bbr" ]; then
+            exit 0
+        else
+            exit 1
+        fi
+        ;;
+    *)
+        exit 2
+        ;;
+    esac
 }
