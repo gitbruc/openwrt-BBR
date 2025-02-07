@@ -19,12 +19,6 @@ LUCI_DEPENDS:= \
 	+kmod-tcp-bbr
 LUCI_PKGARCH:=all
 
-define Package/$(PKG_NAME)/install
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/bbrswitch $(1)/etc/init.d/bbrswitch
-	chmod 0755 $(1)/etc/init.d/bbrswitch
-endef
-
 include $(TOPDIR)/feeds/luci/luci.mk
 
 # call BuildPackage - OpenWrt buildroot signature
