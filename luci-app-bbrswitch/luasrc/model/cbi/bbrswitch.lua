@@ -4,6 +4,10 @@ m = Map("bbrswitch")
 m.title	= translate("BBRswitch Settings")
 m.description = translate("BBR Congestion Control Algorithm Switch")
 
+m.on_after_commit = function(self)
+    luci.sys.init.restart("bbrswitch")
+end
+
 m:append(Template("bbrswitch/bbrswitch_status"))
 
 s = m:section(TypedSection, "bbrswitch", "")
