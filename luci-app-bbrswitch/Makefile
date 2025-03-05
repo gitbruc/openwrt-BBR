@@ -3,6 +3,8 @@
 # Copyright (C) 2023-2024 沉默の金 <cmzj@cmzj.org>
 # Copyright (C) 2022 Lean <coolsnowwolf@gmail.com>
 # Copyright (C) 2019-2022 ImmortalWrt.org
+# Copyright (C) 2024 gitbruc <nobody3@duck.com>
+
 
 include $(TOPDIR)/rules.mk
 
